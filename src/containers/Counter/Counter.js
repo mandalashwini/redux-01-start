@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import CounterControl from '../../components/CounterControl/CounterControl';
 import CounterOutput from '../../components/CounterOutput/CounterOutput';
 import {connect} from 'react-redux'
+import * as actionType from '../../store/action'
 class Counter extends Component {
     state = {
         counter: 0
@@ -26,6 +27,7 @@ class Counter extends Component {
     }
 
     render () {
+        console.log("aaa",this.props.store_result)
         return (
             <div>
                 <CounterOutput value={this.props.ctr} />
@@ -33,22 +35,34 @@ class Counter extends Component {
                 <CounterControl label="Decrement" clicked={this.props.decrementCounter}  />
                 <CounterControl label="Add 5" clicked={this.props.addCounter}  />
                 <CounterControl label="Subtract 5" clicked={ this.props.subCounter}  />
+                <hr />
+                <button onClick={() => this.props.storeResult(this.props.ctr)}>Store Result</button>
+                <ul>
+                    {this.props.store_result.map(res => (
+                        <li key={res.id} onClick={() => this.props.deleteResult(res.id)}>{res.value}</li>
+                    )
+                    )}
+                    </ul>
             </div>
         );
     }
 }
 const mapStateToProps = (state) =>{
     return{
-    ctr : state.counter
+    ctr : state.ctr.counter,
+    store_result :state.res.result
+
     }
 }
 
 const mapDispatchToProps = dispatch =>{
     return{
-        incrementCounter: () => dispatch({type : 'INCREMENT'}),
-        decrementCounter: () => dispatch({type : 'DECREMENT'}),
-        addCounter: () => dispatch( {type: 'ADD', value: 5}),
-        subCounter: () => dispatch( {type: 'SUB', value: 5})
+        incrementCounter: () => dispatch({type : actionType.INCREMENT}),
+        decrementCounter: () => dispatch({type : actionType.DECREMENT}),
+        addCounter: () => dispatch( {type: actionType.ADD, value: 5}),
+        subCounter: () => dispatch( {type: actionType.SUB, value: 5}),
+        storeResult: (result) => dispatch( {type: actionType.STORE_RESULT, result: result}),
+        deleteResult: (id) => dispatch( {type: actionType.DELETE_RESULT,id:id})
     }
 }
 
